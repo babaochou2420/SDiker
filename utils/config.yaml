@@ -1,0 +1,18 @@
+# config.yaml
+
+API:
+  SDWebUI: "http://localhost:7860"
+
+PROMPT:
+  fixed:
+    POS_T: "best quality, "
+    NEG_T: "low quality, blurry, greyscale, comic art, text, watermark, signature, ugly, bad anatomy, cropped, uncensored, xray"
+  style:
+    chibi: "[System: Chibi Style] Cute, exaggerated features, big eyes."
+    realistic: "[System: Realistic Style] Detailed, lifelike proportions."
+
+BASEMODEL:
+  style:
+    Chibi: "cuteyukimixAdorable_kemiaomiao.safetensors"
+    Anime: "AOM3A1B_orangemixs.safetensors"
+    Realistic:

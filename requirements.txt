@@ -1,0 +1,10 @@
+# GUI
+gradio==5.4.0
+# API
+requests==2.32.3
+# IMG
+pillow==11.0.0
+# SYS
+PyYAML==6.0.2
+# LOG
+beans-logging==6.0.0

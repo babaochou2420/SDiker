@@ -1,0 +1,10 @@
+white background, thick outline, thumbnail, upper body, 
+
+chibi emote, angry, 
+
+solo, texas (arknights), blue gloves, 1girl, blue shorts, gloves, black pantyhose, shirt, black hair, long hair, black vest, shorts, animal ears, pantyhose, vest, white shirt, long sleeves, white background, looking at viewer, fingerless gloves, simple background, wolf ears, cowboy shot, blue necktie, necktie, pantyhose under shorts, pouch, black cape, cape, breasts, animal ear fluff, collared shirt, very long hair, belt pouch, bangs, belt, hand up
+
+
+
+
+ <lora:gstamp_02:1> <lora:Omertosa:0.85> <lora:chibi_emote_v1:1>

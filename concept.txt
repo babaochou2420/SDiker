@@ -1,0 +1,15 @@
+step 1. 
+
+Generate a character that with selectable style (chibi, realistic >> Change Base)
+
+step 2. 
+
+Accept or Re-Gen the base "full-body" image
+
+step 3. 
+
+Start running with emote sets and display each with "prompt" memory, so able to re-gen
+
+step 4. 
+
+Concantate all in to a chart, with the output of a full .png (full) and .zip (each)
