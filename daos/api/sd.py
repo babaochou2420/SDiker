@@ -15,7 +15,6 @@ class SDAPI:
         pass
 
     def genChara(self, pos, neg, style="chibi", seed=-1, width=512, height=512):
-
         # Step 1. Changing the base-model based on style
         self.setBase(style)
 
@@ -44,7 +43,6 @@ class SDAPI:
         response = requests.post(url, json=payload)
 
         if response.status_code == 200:
-
             image = Image.open(
                 io.BytesIO(base64.b64decode(response.json().get("images", [None])[0]))
             )
@@ -59,15 +57,14 @@ class SDAPI:
         None
 
     # def getBase(style):
-    #     match style:
-    #         case "Anime":
-    #             return config['BASEMODEL']['style']['anime']
-    #         case "Chibi":
-    #             return config['BASEMODEL']['style']['chibi']
+    #   match style:
+    #   case "Anime":
+    #   return config['BASEMODEL']['style']['anime']
+    #   case "Chibi":
+    #   return config['BASEMODEL']['style']['chibi']
 
     # Changing the Base-Model
     def setBase(self, style):
-
         url = config["API"]["SDWebUI"] + "/sdapi/v1/options"
 
         # Get request template
