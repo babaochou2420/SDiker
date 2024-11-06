@@ -6,9 +6,9 @@ class CharaDao:
     pass
 
   def getChara(charaInfo):
-    # Debugging
-    logger.warning(charaInfo)
-    logger.warning(type(charaInfo))
+    # # Debugging
+    # logger.warning(charaInfo)
+    # logger.warning(type(charaInfo))
 
     return (
         charaInfo["pos"],

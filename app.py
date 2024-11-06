@@ -14,7 +14,6 @@ sdAPI = SDAPI()
 
 emoteDao = EmoteDao()
 
-emoteSet = None
 
 #
 # Functions
@@ -23,7 +22,7 @@ emoteSet = None
 
 def genChara(pos, neg, style, seed=-1, wid=512, hgt=512):
 
-  image, seed = sdAPI.genChara(pos, neg, style, seed, wid, hgt)
+  image, ref_base64, seed = sdAPI.genChara(pos, neg, style, seed, wid, hgt)
 
   return (
       image,
@@ -33,6 +32,7 @@ def genChara(pos, neg, style, seed=-1, wid=512, hgt=512):
       hgt,
       {"pos": pos, "neg": neg, "style": style,
           "seed": seed, "wid": wid, "hgt": hgt},
+      ref_base64,
   )
 
 
@@ -40,11 +40,15 @@ def genChara(pos, neg, style, seed=-1, wid=512, hgt=512):
 #   return CharaDao.getChara(pos, neg, style, seeds, wid, hgt)
 
 
-def genEmote(charaInfo, closeup, set="set1"):
+def genEmote(charaInfo, ref_base64, docpos, docneg):
 
   pos, neg, style, seed, wid, hgt = CharaDao.getChara(charaInfo)
 
-  return emoteDao.genEmote(pos, neg, closeup, set, style, seed, wid, hgt)
+  pos, neg = emoteDao.setPrompt(False, pos, neg, docpos, docneg)
+
+  img = emoteDao.genEmote(ref_base64, pos, neg, style, seed, wid, hgt)
+
+  return img
 
 
 def update_emote_prompt(index, new_prompt):
@@ -74,8 +78,14 @@ def export_images():
 # i_ : input
 # o_ : output
 # s_ : system
+# c_ : cache
 #
 with gr.Blocks() as demo:
+  #
+  # State
+  #
+
+  c_ref_base64 = gr.State(value=None)
 
   charaInfo = gr.State(value=None)
 
@@ -137,7 +147,8 @@ with gr.Blocks() as demo:
       gen_chara_btn.click(
           genChara,
           inputs=[i_pos, i_neg, i_sty, i_seed, i_wid, i_hgt],
-          outputs=[o_chara, o_seeds, o_sty, o_wid, o_hgt, charaInfo],
+          outputs=[o_chara, o_seeds, o_sty, o_wid,
+                   o_hgt, charaInfo, c_ref_base64],
       )
       lora_upload.upload(
           load_lora_model, inputs=lora_upload, outputs=lora_status)
@@ -159,10 +170,8 @@ with gr.Blocks() as demo:
       # def show_emotes(set):
       #   return emoteDao.getEmoteSet(set)
 
-      s_emoteSet.change(inputs=[s_emoteSet], outputs=s_emoteSet)
-
-      @gr.render(inputs=[charaInfo, s_emoteSet])
-      def listEmoteElements(charaInfo, set):
+      @gr.render(inputs=s_emoteSet)
+      def listEmoteElements(set):
 
         set = emoteDao.getEmoteSet(set)
 
@@ -173,22 +182,19 @@ with gr.Blocks() as demo:
               o_img = gr.Image(format="png", type="pil")
             with gr.Column(scale=5):
               with gr.Row():
-                gr.Textbox(label="Pos",
-                           placeholder=f"{doc['pos']}")
-                gr.Textbox(label="Neg",
-                           placeholder=f"{doc['neg']}")
+                i_pos = gr.Textbox(label="Pos",
+                                   value=f"{doc['pos']}")
+                i_neg = gr.Textbox(label="Neg",
+                                   value=f"{doc['neg']}")
               with gr.Row():
                 with gr.Column(scale=1):
                   i_gen = gr.Button(
-                      value="Re-Gen",
+                      value="Generate",
                       icon="./assets/icon/replay_24dp.png",
                   )
 
-                  pos, neg, style, seed, wid, hgt = CharaDao.getChara(
-                      charaInfo)
-
-                  i_gen.click(fn=genChara, inputs=[
-                              pos, neg, style, seed, wid, hgt], outputs=[o_img])
+                  i_gen.click(fn=genEmote, inputs=[
+                              charaInfo, c_ref_base64, i_pos, i_neg], outputs=[o_img])
                 with gr.Column(scale=1):
                   gr.Checkbox(label="Close Up")
 
@@ -204,14 +210,25 @@ with gr.Blocks() as demo:
                           value=0,
                           label="Detail Tweaker",
                       )
+
+                with gr.Column(scale=1):
+                  with gr.Accordion("Advanced"):
+
+                    with gr.Column():
+                      with gr.Row():
+                        gr.Checkbox(
+                            label="IPadapter (This will take much time)", scale=1)
+                        # gr.Textbox(value="This will take much time", scale=2)
           """"""
 
-      # Set up button interaction for generating emotes
-      gen_stickers_btn.click(
-          genEmote,
-          inputs=[charaInfo, s_emoteSet],
-          outputs=[sticker_output],
-      )
+      s_emoteSet.change(fn=listEmoteElements, inputs=s_emoteSet)
+
+      # # Set up button interaction for generating emotes
+      # gen_stickers_btn.click(
+      #     genEmote,
+      #     inputs=[charaInfo, s_emoteSet],
+      #     outputs=[sticker_output],
+      # )
 
     with gr.Tab("Step 3. Output"):
       gr.Markdown("### Step 3. Output")
