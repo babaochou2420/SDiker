@@ -1,23 +1,27 @@
 
+""" 
+貼圖生成
+"""
+
 import gradio as gr
 
 from daos.chara import CharaDao
 from daos.emote import EmoteDao
 
 emoteDao = EmoteDao()
-charaDao  = CharaDao()
+charaDao = CharaDao()
 
 
 class genEmoteTab():
   def __init__(): pass
 
-  def __load__(c_ref_base64, charaInfo):
-    # 
+  def __load__(c_ref_base64, charaInfo, uuid):
+    #
     # Functions
-    # 
+    #
     def genEmote(charaInfo, ref_base64, docpos, docneg):
 
-      pos, neg, style, seed, wid, hgt = CharaDao.getChara(charaInfo)
+      pos, neg, style, seed, wid, hgt = charaDao.getChara(charaInfo)
 
       pos, neg = emoteDao.setPrompt(False, pos, neg, docpos, docneg)
 
@@ -25,10 +29,12 @@ class genEmoteTab():
 
       return img
 
+    def savEmote(img, uuid, seq):
+      emoteDao.savEmote(img, uuid, seq)
 
-    # 
+    #
     # Widgets
-    # 
+    #
     with gr.Tab("Step 2. Gen Sticker"):
 
       s_emoteSet = gr.Dropdown(
@@ -59,8 +65,9 @@ class genEmoteTab():
               #   f_seq = gr.Textbox(
               #       value=f"Seq: {doc['code']}", container=False)
 
-              o_img = gr.Image(format="png", type="pil",
-                               label=f"{doc['code']}")
+              o_img = gr.Image(format="png", type="pil")
+
+              i_seq = gr.Textbox(value=f"{doc['code']}")
 
             with gr.Column(scale=6):
               with gr.Row():
@@ -78,8 +85,11 @@ class genEmoteTab():
                     )
                     i_gen.click(fn=genEmote, inputs=[
                                 charaInfo, c_ref_base64, i_pos, i_neg], outputs=[o_img])
-                    i_savImage = gr.Button(
+                    i_savEmote_btn = gr.Button(
                         value="Save Result", icon="./assets/icon/new_label_24dp.png")
+
+                    i_savEmote_btn.click(
+                        fn=savEmote, inputs=[o_img, uuid, i_seq])
                 with gr.Column(scale=1):
                   gr.Checkbox(label="Close Up")
 

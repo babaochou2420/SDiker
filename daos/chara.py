@@ -2,10 +2,10 @@ from beans_logging.auto import logger
 
 
 class CharaDao:
-  def __init__():
+  def __init__(self):
     pass
 
-  def getChara(charaInfo):
+  def getChara(self, charaInfo):
     # # Debugging
     # logger.warning(charaInfo)
     # logger.warning(type(charaInfo))

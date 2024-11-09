@@ -1,6 +1,12 @@
 
+""" 
+底圖生成
+"""
+
 from utils.config import Config
 import gradio as gr
+
+import uuid
 
 from beans_logging.auto import logger
 
@@ -19,7 +25,7 @@ class genCharaTab:
 
   def __init__(): pass
 
-  def __load__(c_ref_base64, charaInfo):
+  def __load__(c_ref_base64, charaInfo, uuid):
 
     #
     # Functions
@@ -56,6 +62,7 @@ class genCharaTab:
           {"pos": pos, "neg": neg, "style": style,
               "seed": seed, "wid": wid, "hgt": hgt},
           ref_base64,
+          uuid.uuid4()
       )
 
     def genRefTag(imgPath):
@@ -211,7 +218,7 @@ class genCharaTab:
           genChara,
           inputs=[i_pos, i_neg, i_sty, i_proportion, i_seed, i_wid, i_hgt],
           outputs=[o_chara, o_seeds, o_sty, o_wid,
-                   o_hgt, charaInfo, c_ref_base64],
+                   o_hgt, charaInfo, c_ref_base64, uuid],
       )
       lora_upload.upload(
           load_lora_model, inputs=lora_upload, outputs=lora_status)

@@ -14,7 +14,7 @@ from utils.config import Config
 
 from screens.genChara import genCharaTab
 from screens.genEmote import genEmoteTab
-from screens.savEmote import savEmoteTab
+from screens.expEmote import expEmoteTab
 
 from screens.settings import settingsTab
 
@@ -70,13 +70,9 @@ def genChara(pos, neg, style, porportion, seed=-1, wid=512, hgt=512):
 #   return CharaDao.getChara(pos, neg, style, seeds, wid, hgt)
 
 
-
-
-
 #
 # Interface
 #
-
 #
 # i_ : input
 # o_ : output
@@ -93,13 +89,15 @@ with gr.Blocks() as demo:
 
   charaInfo = gr.State(value=None)
 
+  uuid = gr.State(value=None)
+
   with gr.Tabs():
-    
-    genCharaTab.__load__(c_ref_base64, charaInfo)
 
-    genEmoteTab.__load__(c_ref_base64, charaInfo)
+    genCharaTab.__load__(c_ref_base64, charaInfo, uuid)
 
-    savEmoteTab.__load__()
+    genEmoteTab.__load__(c_ref_base64, charaInfo, uuid)
+
+    expEmoteTab.__load__()
 
     settingsTab.__load__()
 

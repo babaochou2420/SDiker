@@ -1,4 +1,8 @@
 
+""" 
+成品輸出
+"""
+
 import gradio as gr
 
 from daos.emote import EmoteDao
@@ -6,7 +10,7 @@ from daos.emote import EmoteDao
 emoteDao = EmoteDao()
 
 
-class savEmoteTab():
+class expEmoteTab():
 
   def __init__(): pass
 
@@ -15,6 +19,9 @@ class savEmoteTab():
     #
     # Functions
     #
+    def savEmoteGrid(uuid, col, row):
+      return emoteDao.savEmoteGrid(uuid, col, row)
+
     def savEmoteZip(uuid):
       return emoteDao.savEmoteZip(uuid)
 
@@ -29,27 +36,31 @@ class savEmoteTab():
         # Grid
         with gr.Column(variant="panel"):
           with gr.Row():
-            grid_button = gr.Button(
+            i_grd_btn = gr.Button(
                 "Grid Layout", icon="./assets/icon/grid_view_24dp.png", scale=3)
-            grid_layout_dropdown = gr.Dropdown(
-                choices=["3x3", "3x4", "4x4"],
-                value="3x3", scale=1, show_label=False, container=False
+            i_col = gr.Dropdown(
+                choices=[3, 4],
+                value=3, scale=1, show_label=False, container=False
             )
-          grid_image_output = gr.Image(
+            i_row = gr.Dropdown(
+                choices=[3, 4],
+                value=3, scale=1, show_label=False, container=False
+            )
+
+          o_grd_img = gr.Gallery(
               label="Grid Layout Preview",
-              type="pil",
-              format="png"
+              show_label=True,
           )
+
+          i_grd_btn.click(fn=savEmoteGrid, inputs=[
+              i_uuid, i_col, i_row], outputs=[o_grd_img])
 
         # File
         with gr.Column(variant="panel"):
-          compress_button = gr.Button(
+          i_zip_btn = gr.Button(
               "File Output", icon="./assets/icon/output_circle_24dp.png")
-          zip_image_output = gr.Image(
-              label="Compressed Images Preview",
-              type="pil",
-              format="png"
-          )
+
+          o_zip = gr.File(value=None)
 
       # # Define button click actions
       # grid_button.click(
@@ -58,8 +69,8 @@ class savEmoteTab():
       #     outputs=[grid_image_output]
       # )
 
-      compress_button.click(
+      i_zip_btn.click(
           fn=savEmoteZip,
           inputs=[i_uuid],
-          outputs=[zip_image_output]
+          outputs=[o_zip]
       )

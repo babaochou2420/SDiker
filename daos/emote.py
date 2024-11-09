@@ -244,8 +244,11 @@ class EmoteDao:
     if not os.path.isdir(folder_path):
       return f"Directory not found for UUID: {uuid}"
 
+    export_folder = os.path.join('./archive', uuid, '# export')
+    os.makedirs(export_folder, exist_ok=True)
+
     # Define the zip file path
-    zip_path = os.path.join(folder_path, f"SDiker_{uuid}.zip")
+    zip_path = os.path.join(export_folder, f"SDiker_{uuid}.zip")
 
     # Create a zip file and add all PNG files from the directory
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
@@ -258,3 +261,53 @@ class EmoteDao:
 
     # Return the path to the zip file for download
     return zip_path
+
+  def savEmoteGrid(self, uuid, col, row):
+    # Define the folder path based on the UUID
+    folder_path = os.path.join('./archive', uuid)
+
+    # Check if the folder exists
+    if not os.path.isdir(folder_path):
+      return f"Directory not found for UUID: {uuid}"
+
+    export_folder = os.path.join('./archive', uuid, '# export')
+    os.makedirs(export_folder, exist_ok=True)
+
+    # Collect all PNG files, sort by name
+    png_files = sorted(
+        [f for f in os.listdir(folder_path) if f.endswith('.png')])
+
+    # Calculate the total number of grids required
+    total_images = len(png_files)
+    max_per_grid = col * row
+    # Round up to ensure all images fit
+    grid_count = (total_images + max_per_grid - 1) // max_per_grid
+
+    output_paths = []
+
+    for grid_index in range(grid_count):
+      # Start and end indices for the images in this grid
+      start_idx = grid_index * max_per_grid
+      end_idx = min(start_idx + max_per_grid, total_images)
+
+      # Create a blank canvas based on image dimensions and grid size
+      first_image = Image.open(os.path.join(folder_path, png_files[start_idx]))
+      img_width, img_height = first_image.size
+      grid_width = col * img_width
+      grid_height = row * img_height
+      grid_image = Image.new('RGBA', (grid_width, grid_height))
+
+      # Place images into the grid
+      for i, img_name in enumerate(png_files[start_idx:end_idx]):
+        img = Image.open(os.path.join(folder_path, img_name))
+        x = (i % col) * img_width
+        y = (i // col) * img_height
+        grid_image.paste(img, (x, y))
+
+      # Save the grid image
+      grid_filename = os.path.join(
+          export_folder, f"SDiker_grid_{uuid}_{grid_index + 1}.png")
+      grid_image.save(grid_filename, "PNG")
+      output_paths.append(grid_filename)
+
+    return output_paths
