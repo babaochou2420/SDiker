@@ -236,7 +236,7 @@ class EmoteDao:
 
     return f"Image saved successfully at: {file_path}"
 
-  def savEmoteZip(uuid):
+  def savEmoteZip(self, uuid):
     # Define the folder path based on the UUID
     folder_path = os.path.join('./archive', uuid)
 
