@@ -25,7 +25,7 @@ class genCharaTab:
 
   def __init__(): pass
 
-  def __load__(c_ref_base64, charaInfo, uuid):
+  def __load__(c_ref_base64, charaInfo, stateId):
 
     #
     # Functions
@@ -218,7 +218,7 @@ class genCharaTab:
           genChara,
           inputs=[i_pos, i_neg, i_sty, i_proportion, i_seed, i_wid, i_hgt],
           outputs=[o_chara, o_seeds, o_sty, o_wid,
-                   o_hgt, charaInfo, c_ref_base64, uuid],
+                   o_hgt, charaInfo, c_ref_base64, stateId],
       )
       lora_upload.upload(
           load_lora_model, inputs=lora_upload, outputs=lora_status)

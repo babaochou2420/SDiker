@@ -89,13 +89,13 @@ with gr.Blocks() as demo:
 
   charaInfo = gr.State(value=None)
 
-  uuid = gr.State(value=None)
+  stateId = gr.State(value=None)
 
   with gr.Tabs():
 
-    genCharaTab.__load__(c_ref_base64, charaInfo, uuid)
+    genCharaTab.__load__(c_ref_base64, charaInfo, stateId)
 
-    genEmoteTab.__load__(c_ref_base64, charaInfo, uuid)
+    genEmoteTab.__load__(c_ref_base64, charaInfo, stateId)
 
     expEmoteTab.__load__()
 

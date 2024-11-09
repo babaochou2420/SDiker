@@ -15,7 +15,7 @@ charaDao = CharaDao()
 class genEmoteTab():
   def __init__(): pass
 
-  def __load__(c_ref_base64, charaInfo, uuid):
+  def __load__(c_ref_base64, charaInfo, stateId):
     #
     # Functions
     #
@@ -89,7 +89,7 @@ class genEmoteTab():
                         value="Save Result", icon="./assets/icon/new_label_24dp.png")
 
                     i_savEmote_btn.click(
-                        fn=savEmote, inputs=[o_img, uuid, i_seq])
+                        fn=savEmote, inputs=[o_img, stateId, i_seq])
                 with gr.Column(scale=1):
                   gr.Checkbox(label="Close Up")
 

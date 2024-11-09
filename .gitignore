@@ -1,3 +1,5 @@
 .venv/
 
+archive/
+
 *__pycache__/

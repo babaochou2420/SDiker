@@ -17,6 +17,26 @@ class SDAPI:
   def __init__(self):
     pass
 
+  def genTXT2IMG(payload):
+
+    url = config["API"]["SDWebUI"] + "/sdapi/v1/txt2img"
+
+    response = requests.post(url, json=payload)
+
+    if response.status_code == 200:
+
+      ref_base64 = base64.b64decode(response.json().get("images", [None])[0])
+
+      image = Image.open(
+          io.BytesIO(ref_base64)
+      )
+      seed = json.loads(response.json().get("info")).get("seed", -1)
+
+      return image, ref_base64, seed
+    else:
+      print(f"Error {response.status_code}: {response.text}")
+      return None
+
   def genChara(self, pos, neg, style="chibi", seed=-1, width=512, height=512):
     # Step 1. Changing the base-model based on style
     self.setBaseModel(style)
