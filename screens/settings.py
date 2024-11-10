@@ -1,9 +1,15 @@
 
-""" 
+"""
 系統設定
 """
 
+from beans_logging.auto import logger
+import json
 import gradio as gr
+
+from daos.emote import EmoteDao
+
+emoteDao = EmoteDao()
 
 
 class settingsTab():
@@ -11,15 +17,38 @@ class settingsTab():
   def __init__(): pass
 
   def __load__():
+    #
+    # Functions
+    #
 
-    with gr.Tab("Settings"):
-        # # Emote set list display
-        # emote_set_list = gr.Dropdown(choices=list(emote_sets.keys()), label="Select Emote Set")
+    def getEmoteSet(key):
+      return emoteDao.getEmoteSet(key)
 
-        # Display and edit JSON content of selected emote set
-      json_editor = gr.Textbox(
-          label="Emote Set Content", lines=20, interactive=True)
-      save_button = gr.Button("Save Changes")
+    #
+    # Widgets
+    #
+
+    with gr.Tab("Settings") as tab:
+
+      @gr.render(triggers=[tab.select])
+      def build():
+
+        list = emoteDao.lstEmoteSets()
+
+        logger.warning(list)
+
+        for doc in list:
+          with gr.Column(variant="panel"):
+            with gr.Accordion(label=doc, open=False):
+              with gr.Row():
+                gr.Code(scale=18, show_label=False, container=False, interactive=True,
+                        language="json", value=json.dumps(getEmoteSet(doc), indent=4, ensure_ascii=False))
+
+                with gr.Column():
+                  gr.Button(scale=1, icon="./assets/icon/save_24dp.png",
+                            value="Save Changes")
+                  gr.Button(scale=1, icon="./assets/icon/delete_24dp.png",
+                            value="Delete")
 
       # Delete and edit buttons
       with gr.Row():

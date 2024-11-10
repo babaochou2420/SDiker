@@ -1,3 +1,5 @@
+from beans_logging.auto import logger
+import shutil
 import zipfile
 import uuid
 import os
@@ -17,108 +19,7 @@ config = Config.get_config()
 
 class EmoteDao:
   def __init__(self):
-    self.set = {
-        "": [{"code": "1", "pos": "", "neg": ""}],
-        "set1": [
-            {"code": "1", "pos": "(angry:1.1)", "neg": "blush"},
-            {"code": "2", "pos": "(happy:1.2)", "neg": ""},
-            {"code": "3", "pos": "(sleeping:1.2)", "neg": ""},
-            {"code": "4", "pos": "(crying:0.8)", "neg": ""},
-            {"code": "5", "pos": "(blush:1.2), (shy)", "neg": ""},
-            {
-                "code": "6",
-                "pos": "(blush:1.2), (embarassed), flying sweatdrop",
-                "neg": "",
-            },
-            {"code": "7", "pos": "(panicking:1.2)", "neg": ""},
-            {"code": "8", "pos": "(terrified:1.2)", "neg": ""},
-            {"code": "9", "pos": "(drooling)", "neg": ""},
-            {"code": "10",
-             "pos": "(waving hello:1.2), (smiling:1.2)", "neg": ""},
-            {"code": "11", "pos": "sad, frowning, gloomy, downcast", "neg": ""},
-        ],
-        "set2": [
-            {"code": "11", "pos": "sad, frowning, gloomy, downcast", "neg": ""},
-            {"code": "11", "pos": "sad, frowning, gloomy, downcast", "neg": ""},
-        ],
-        "set3": [
-            {
-                "code": "1",
-                "pos": "(sparkle:1.2), +_+, emote, blush, smile, open mouth, sparkling eyes",
-                "neg": "",
-            },
-            {"code": "1",
-             "pos": "(angry:1.2), blush, open mouth, ", "neg": ""},
-            {"code": "2",
-             "pos": "(laughing:1.2), >_<, closed eyes, fang, open mouth, (pointing up:1.2)", "neg": ""},
-            {"code": "3",
-             "pos": "(laughing:1.2), fang, open mouth, thumb up,", "neg": ""},
-            {"code": "4",
-             "pos": "(laughing:1.2), wink, (one eye closed:1.1), playful smile, ", "neg": ""},
-            {"code": "5",
-             "pos": "(laughing:1.2), (open mouth:1.2), (upper teeth:1.2), (both eyes open:1.6), blush, ", "neg": ""},
-            {"code": "6",
-             "pos": "(wide open eyes:1.2), raised eyebrows, slightly open mouth, (surprised:1.2), (shocked:1.2), ", "neg": ""},
-            {"code": "7",
-             "pos": "(pout:1.2), closed eyes, (look away:1.2)", "neg": ""},
-            {"code": "8",
-             "pos": "(annoyed:1.2), unhappy, (angry:1.1), ", "neg": "blush, "},
-            {"code": "9",
-             "pos": "(panicking:1.2), (flying sweatdrops:1.1), (wavy mouth:1.1), open mouth, ", "neg": ""},
-            {"code": "10",
-             "pos": "(terrified:1.2), (scared), (shrinking:1.2), cowering, downcast, (flying sweatdrops:1.1), slightly open mouth, ", "neg": ""},
-            {"code": "11", "pos": "(smug:1.2), looking at viewer,", "neg": ""},
-            {"code": "12",
-             "pos": "(laughing), pointing at viewer, open mouth, (tears at eye corners:0.9), (small tears:0.9)", "neg": ""},
-            {"code": "1", "pos": "", "neg": ""},
-            {"code": "1", "pos": "", "neg": ""},
-            {"code": "1", "pos": "", "neg": ""},
-            {"code": "1",
-             "pos": "", "neg": ""},
-        ],
-        "set4": [
-            {"code": "1",
-             "pos": "(crossed arm:1.2), (angry:1.1), grit teeth", "neg": ""},
-            {"code": "1", "pos": "", "neg": ""},
-            {"code": "1", "pos": "", "neg": ""},
-            {"code": "1", "pos": "", "neg": ""},
-            {"code": "1", "pos": "", "neg": ""},
-            {"code": "1", "pos": "", "neg": ""},
-        ],
-        "set7": [
-            {"code": "1", "pos": "ecstatic, thrilled, overjoyed, elated, jumping up and down, raising arms in the air", "neg": ""},
-            {"code": "2", "pos": "relieved, reassured, comforted, soothed, sighing, slumping shoulders", "neg": ""},
-            {"code": "3",
-             "pos": "(curious:1.1), inquisitive, fascinated, interested, (leaning forward:1.2), (tilting head:1.5)", "neg": ""},
-            {"code": "4", "pos": "confident, secure, self-assured, bold, standing up straight, chest out, looking directly at camera", "neg": ""},
-            {"code": "5", "pos": "bitter, resentful, indignant, enraged, gnashing teeth, clenching fists, glaring at someone", "neg": ""},
-            {"code": "6",
-             "pos": "(cautious:1.1), vigilant, attentive, watchful, holding head back, (narrowed eyes:1.2), (squint:1.2)", "neg": ""},
-            {"code": "7", "pos": "euphoric, ecstatic, jubilant, triumphant, twirling around, throwing arms up in the air, grinning", "neg": ""},
-            {"code": "8", "pos": "fearful, alarmed, apprehensive, scared, tensing up, dry mouth, avoiding eye contact",
-             "neg": ""},  # trying to improve
-            {"code": "9", "pos": "apologetic, remorseful, contrite, sorrowful, bowed head, slumped shoulders, clasped hands", "neg": ""},
-            {"code": "10", "pos": "exhilarated, thrilled, invigorated, energized, pumping fist, jumping up and down, beaming smile", "neg": ""},
-            {"code": "11", "pos": "indifferent, neutral, disconnected, apathetic, shrugging shoulders, looking away, slouching", "neg": ""},
-            {"code": "12", "pos": "sympathetic, compassionate, empathetic, supportive, placing hand on shoulder, listening intently, nodding", "neg": ""},
-            {"code": "13", "pos": "amused, entertained, delighted, tickled, laughing, giggling, winking", "neg": ""},
-            {"code": "14", "pos": "disappointed, letdown, crushed, crestfallen, slumping shoulders, drooping head, frowning", "neg": ""},
-            {"code": "15", "pos": "exasperated, frustrated, irritated, annoyed, scratching head, growling, rolling eyes", "neg": ""},
-            {"code": "16", "pos": "inspired, motivated, driven, impassioned, thrusting forward, gesticulating, flashing a determined look", "neg": ""},
-            {"code": "17",
-             "pos": "melancholy, somber, contemplative, (mournful:1.2), (sitting with head in hands:1.2), (gazing downward:1.2), slow blinking, (tears:0.8)", "neg": ""},
-            {"code": "18", "pos": "(coughing:1.2)", "neg": ""}
-        ]
-    }
-
-    #  (arms outstretched), (reaching forward:1.2), (open hands), (inviting expression:1.2), (asking for a hug:1.2)
-
-  def getEmoteSetList(self):
-    return list(self.set.keys())
-
-  def getEmoteSet(self, set):
-
-    return list(self.set[set])
+    self.json_dir = './assets/json'
 
   def setPrompt(self, closeup, pos, neg, docpos, docneg):
 
@@ -132,29 +33,9 @@ class EmoteDao:
 
     return pos, neg
 
-  # def genEmote(
-  #     self, pos, neg, closeup, set="set1", style="chibi", seed=-1, wid=512, hgt=512
-  # ):
-
-  #   sdAPI = SDAPI()
-
-  #   gallery = []
-
-  #   pos = pos + "<lora:chibi_emote_v1:1>, emote, "
-
-  #   if closeup:
-  #     pos = pos + "(close up:1.2), "
-
-  #   for doc in self.set[set]:
-  #     # For each,
-  #     docpos = pos + doc["pos"]
-  #     docneg = neg + doc["neg"]
-
-  #     img, seed = sdAPI.genChara(docpos, docneg, style, seed, wid, hgt)
-
-  #     gallery.append(img)
-
-  #   return gallery
+  #
+  # Emote
+  #
 
   def genEmote(self, ref_base64, pos, neg, style, seed, wid, hgt):
 
@@ -236,6 +117,11 @@ class EmoteDao:
 
     return f"Image saved successfully at: {file_path}"
 
+  #
+  # Export
+  #
+
+  # Output the pack as zip
   def savEmoteZip(self, uuid):
     # Define the folder path based on the UUID
     folder_path = os.path.join('./archive', uuid)
@@ -262,6 +148,7 @@ class EmoteDao:
     # Return the path to the zip file for download
     return zip_path
 
+  # Output the pack as grids
   def savEmoteGrid(self, uuid, col, row):
     # Define the folder path based on the UUID
     folder_path = os.path.join('./archive', uuid)
@@ -311,3 +198,106 @@ class EmoteDao:
       output_paths.append(grid_filename)
 
     return output_paths
+
+  #
+  # Emote Set
+  #
+
+  def lstEmoteSets(self):
+
+    logger.warning("# RUN - lstEmoteSets()")
+
+    if not os.path.isdir(self.json_dir):
+      return []
+
+    result = [os.path.splitext(filename)[0] for filename in os.listdir(
+        self.json_dir) if filename.endswith(".json")]
+
+    logger.warning("# END - lstEmoteSets()")
+
+    return result
+
+  def getEmoteSets(self):
+      # Log start of function
+    logger.warning("# RUN - getEmoteSets()")
+
+    # Get list of JSON filenames (without extension)
+    filenames = self.lstEmoteSets()
+
+    # Initialize a dictionary to hold all JSON contents
+    combined_data = {}
+
+    # Loop through filenames and add each JSON content to the combined_data dictionary
+    for name in filenames:
+      data = self.getEmoteSet(name)
+      if data is not None:
+        # Store each JSON content under its filename key
+        combined_data[name] = data
+
+    # Log end of function
+    logger.warning("# END - getEmoteSets()")
+
+    return combined_data
+
+  def getEmoteSet(self, keyname):
+    """
+    Load the JSON file and return its content as a dictionary.
+    """
+    file_path = os.path.join(self.json_dir, f"{keyname}.json")
+
+    if not os.path.isfile(file_path):
+      return f"File not found for keyname: {keyname}"
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+      data = json.load(file)
+
+    return data
+
+  def updEmoteSet(self, json_string, keyname="set2"):
+    """
+    Update the JSON file with the provided JSON string.
+    """
+    file_path = os.path.join(self.json_dir, f"{keyname}.json")
+
+    try:
+      # Parse JSON string
+      data = json.loads(json_string)
+
+      # Write the updated data to the file
+      with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(data, file, indent=4, ensure_ascii=False)
+
+      return f"{keyname}.json has been updated successfully."
+
+    except json.JSONDecodeError:
+      return "Invalid JSON format."
+
+  def delEmoteSet(self, keyname="set2"):
+    """
+    Delete the specified JSON file.
+    """
+    file_path = os.path.join(self.json_dir, f"{keyname}.json")
+
+    if os.path.isfile(file_path):
+      os.remove(file_path)
+      return f"{keyname}.json has been deleted successfully."
+    else:
+      return f"File not found for keyname: {keyname}"
+
+  def setEmoteSet(self, uploaded_file, new_keyname="new_set"):
+    """
+    Upload a JSON file, saving a copy in the same directory with a new keyname.
+    """
+    new_file_path = os.path.join(self.json_dir, f"{new_keyname}.json")
+
+    # Ensure the file is in JSON format
+    if not uploaded_file.name.endswith('.json'):
+      return "Please upload a JSON file."
+
+    # Copy the uploaded file to the specified directory with the new name
+    try:
+      shutil.copy(uploaded_file.name, new_file_path)
+      return f"{new_keyname}.json has been created successfully in {self.json_dir}."
+
+    except Exception as e:
+      return f"Error saving file: {e}"

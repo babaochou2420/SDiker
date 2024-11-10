@@ -3,6 +3,8 @@
 貼圖生成
 """
 
+from beans_logging.auto import logger
+import json
 import gradio as gr
 
 from daos.chara import CharaDao
@@ -35,13 +37,11 @@ class genEmoteTab():
     #
     # Widgets
     #
-    with gr.Tab("Step 2. Gen Sticker"):
+    with gr.Tab("Step 2. Gen Sticker") as tab:
 
       s_emoteSet = gr.Dropdown(
-          value="", choices=list(emoteDao.getEmoteSetList()), label="Select Set"
+          value="", choices=list(emoteDao.lstEmoteSets()), label="Select Set"
       )
-
-      gr.Markdown("### Step 2. Generate Stickers")
 
       # gen_stickers_btn = gr.Button("Generate Emotes")
 
@@ -52,12 +52,13 @@ class genEmoteTab():
       # def show_emotes(set):
       #   return emoteDao.getEmoteSet(set)
 
-      @gr.render(inputs=s_emoteSet)
-      def listEmoteElements(set):
+      @gr.render(inputs=s_emoteSet, triggers=[s_emoteSet.change])
+      def listEmoteElements(key):
 
-        set = emoteDao.getEmoteSet(set)
+        set = emoteDao.getEmoteSet(key)
 
-        for doc in set:
+        for doc in set[key]:
+
           """"""
           with gr.Row(variant="panel"):
             with gr.Column(scale=2):
@@ -116,7 +117,7 @@ class genEmoteTab():
                 #         # gr.Textbox(value="This will take much time", scale=2)
           """"""
 
-      s_emoteSet.change(fn=listEmoteElements, inputs=s_emoteSet)
+      # s_emoteSet.change(fn=listEmoteElements, inputs=s_emoteSet)
 
       # # Set up button interaction for generating emotes
       # gen_stickers_btn.click(
