@@ -46,6 +46,9 @@ class genCharaTab:
           pass
         case "Anime 2":
           pass
+        case "Semi-Realistic":
+
+          pos += "<lora:add_detail:1>"
         case "Realistic":
           pass
         case _:
@@ -139,17 +142,19 @@ class genCharaTab:
                     imgPath = "./assets/demo/style_chibi.png"
                   case "Anime 1":
                     imgPath = "./assets/demo/style_anime_1.png"
-                  case "Anime 2":
-                    imgPath = "./assets/demo/style_anime_2.png"
-                  case "Realistic":
-                    imgPath = "./assets/demo/style_chibi.png"
+                  # case "Anime 2":
+                  #   imgPath = "./assets/demo/style_anime_2.png"
+                  # case "Semi-Realstic":
+                  #   imgPath = "./assets/demo/style_anime_2.png"
+                  # case "Realistic":
+                  #   imgPath = "./assets/demo/style_chibi.png"
                   case _:
                     imgPath = ""
 
                 return gr.update(value=imgPath)
 
               i_sty = gr.Radio(value="Chibi", choices=[
-                               "Chibi", "Anime 1", "Anime 2", "Realistic"], label="")
+                               "Chibi", "Anime 1"], show_label=False)
 
               i_sty.change(x, i_sty, f_demo)
 

@@ -16,4 +16,5 @@ BASEMODEL:
     Chibi: "cuteyukimixAdorable_kemiaomiao.safetensors"
     Anime 1: "cuteyukimixAdorable_kemiaomiao.safetensors"
     Anime 2: "AOM3A1B_orangemixs.safetensors"
-    Realistic:
+    Semi-Realistic: "AOM3A1B_orangemixs.safetensors"
+    Realistic: "majicmixRealistic_v7.safetensors"
