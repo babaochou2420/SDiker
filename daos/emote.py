@@ -162,7 +162,7 @@ class EmoteDao:
 
     # Collect all PNG files, sort by name
     png_files = sorted(
-        [f for f in os.listdir(folder_path) if f.endswith('.png')])
+        [f for f in os.listdir(folder_path) if f.endswith('.png')], key=lambda x: int(x.rstrip('.png')))
 
     # Calculate the total number of grids required
     total_images = len(png_files)
@@ -239,6 +239,7 @@ class EmoteDao:
 
     return combined_data
 
+  # Fetch the emote-set
   def getEmoteSet(self, keyname):
     """
     Load the JSON file and return its content as a dictionary.
@@ -253,7 +254,8 @@ class EmoteDao:
 
     return data
 
-  def updEmoteSet(self, json_string, keyname="set2"):
+  # Update the emote-set
+  def updEmoteSet(self, keyname, json_string):
     """
     Update the JSON file with the provided JSON string.
     """
@@ -265,14 +267,15 @@ class EmoteDao:
 
       # Write the updated data to the file
       with open(file_path, 'w', encoding='utf-8') as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
+        json.dump(data, file, indent=2, ensure_ascii=False)
 
       return f"{keyname}.json has been updated successfully."
 
     except json.JSONDecodeError:
       return "Invalid JSON format."
 
-  def delEmoteSet(self, keyname="set2"):
+  # Delete the emote-set
+  def delEmoteSet(self, keyname):
     """
     Delete the specified JSON file.
     """
@@ -284,20 +287,32 @@ class EmoteDao:
     else:
       return f"File not found for keyname: {keyname}"
 
-  def setEmoteSet(self, uploaded_file, new_keyname="new_set"):
+  # Upload the emote-set
+  def setEmoteSet(self, uploaded_file):
     """
-    Upload a JSON file, saving a copy in the same directory with a new keyname.
+    Upload a JSON file, saving a copy in the same directory with the key name from the JSON content.
     """
-    new_file_path = os.path.join(self.json_dir, f"{new_keyname}.json")
-
     # Ensure the file is in JSON format
     if not uploaded_file.name.endswith('.json'):
       return "Please upload a JSON file."
 
-    # Copy the uploaded file to the specified directory with the new name
     try:
-      shutil.copy(uploaded_file.name, new_file_path)
-      return f"{new_keyname}.json has been created successfully in {self.json_dir}."
+      # Load the content of the JSON file to extract the key name
+      with open(uploaded_file.name, 'r', encoding='utf-8') as file:
+        data = json.load(file)
 
+      # Assuming the JSON is in the format {"key_name": ...}
+      key_name = list(data.keys())[0]
+
+      # Construct the new file path with the key name as the file name
+      new_file_path = os.path.join(self.json_dir, f"{key_name}.json")
+
+      # Copy the uploaded file to the specified directory with the new name
+      shutil.copy(uploaded_file.name, new_file_path)
+
+      return f"{key_name}.json has been created successfully in {self.json_dir}."
+
+    except json.JSONDecodeError:
+      return "Uploaded file is not a valid JSON."
     except Exception as e:
       return f"Error saving file: {e}"

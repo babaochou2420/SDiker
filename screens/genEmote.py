@@ -27,7 +27,7 @@ class genEmoteTab():
 
       pos, neg = emoteDao.setPrompt(False, pos, neg, docpos, docneg)
 
-      img = emoteDao.genEmote(ref_base64, pos, neg, style, seed, wid, hgt)
+      img = emoteDao.genEmote(ref_base64, pos, neg, style, -1, wid, hgt)
 
       return img
 
@@ -39,7 +39,7 @@ class genEmoteTab():
     #
     with gr.Tab("Step 2. Gen Sticker") as tab:
 
-      s_emoteSet = gr.Dropdown(
+      s_emoteSet = gr.Radio(
           value="", choices=list(emoteDao.lstEmoteSets()), label="Select Set"
       )
 

@@ -21,6 +21,15 @@ class settingsTab():
     # Functions
     #
 
+    def setEmoteSet(file):
+      return emoteDao.setEmoteSet(file)
+
+    def delEmoteSet(key):
+      return emoteDao.delEmoteSet(key)
+
+    def updEmoteSet(key, jsonString):
+      return emoteDao.updEmoteSet(key, jsonString)
+
     def getEmoteSet(key):
       return emoteDao.getEmoteSet(key)
 
@@ -28,10 +37,15 @@ class settingsTab():
     # Widgets
     #
 
+    i_setEmoteSet_btn = gr.Button(render=False, value="Upload Emote Set")
+    # i_delEmoteSet_btn = gr.Button(render=False, scale=1,
+    #                               icon="./assets/icon/delete_24dp.png", value="Delete")
+
     with gr.Tab("Settings") as tab:
 
-      @gr.render(triggers=[tab.select])
-      def build():
+      # Settings for emote-sets
+      @gr.render(triggers=[tab.select, i_setEmoteSet_btn.click])
+      def lstEmoteSetWidget():
 
         list = emoteDao.lstEmoteSets()
 
@@ -41,22 +55,42 @@ class settingsTab():
           with gr.Column(variant="panel"):
             with gr.Accordion(label=doc, open=False):
               with gr.Row():
-                gr.Code(scale=18, show_label=False, container=False, interactive=True,
-                        language="json", value=json.dumps(getEmoteSet(doc), indent=4, ensure_ascii=False))
+
+                i_getEmoteSet_key = gr.Textbox(value=doc)
+
+                i_getEmoteSet_txt = gr.Code(scale=18, show_label=False, container=False, interactive=True,
+                                            language="json", value=json.dumps(getEmoteSet(doc), indent=2, ensure_ascii=False))
 
                 with gr.Column():
-                  gr.Button(scale=1, icon="./assets/icon/save_24dp.png",
-                            value="Save Changes")
-                  gr.Button(scale=1, icon="./assets/icon/delete_24dp.png",
-                            value="Delete")
+                  i_updEmoteSet_btn = gr.Button(scale=1, icon="./assets/icon/save_24dp.png",
+                                                value="Save Changes")
 
-      # Delete and edit buttons
-      with gr.Row():
-        delete_button = gr.Button("Delete Selected Emote Set")
-        refresh_button = gr.Button("Refresh List")
+                  i_updEmoteSet_btn.click(fn=updEmoteSet, inputs=[i_getEmoteSet_key,
+                                          i_getEmoteSet_txt])
 
-      # Upload new emote set
+                  # i_delEmoteSet_btn.render()
+
+                  i_delEmoteSet_btn = gr.Button(
+                      scale=1, icon="./assets/icon/delete_24dp.png", value="Delete")
+
+                  i_delEmoteSet_btn.click(
+                      fn=delEmoteSet, inputs=[i_getEmoteSet_key])
+
+      # setEmoteSet
       with gr.Row():
-        json_upload = gr.File(
-            label="Upload New Emote Set (JSON)", type="filepath")
-        upload_button = gr.Button("Upload Emote Set")
+        with gr.Column():
+          i_set_fil = gr.File(
+              label="Upload New Emote Set (JSON)", type="filepath")
+
+          i_setEmoteSet_btn.render()
+
+          i_setEmoteSet_btn.click(fn=setEmoteSet, inputs=[i_set_fil])
+
+        with gr.Column():
+
+          s_set_example = {"set": [{"seq": "The sequance in the set",
+                                    "pos": "the positive prompt for emotes", "neg": "the negative prompt for emotes"}, {"seq": "The sequance in the set",
+                                                                                                                        "pos": "the positive prompt for emotes", "neg": "the negative prompt for emotes"}]}
+
+          gr.Code(value=json.dumps(s_set_example, indent=2,
+                  ensure_ascii=False), label="ex")
