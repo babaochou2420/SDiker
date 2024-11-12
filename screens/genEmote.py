@@ -73,22 +73,22 @@ class genEmoteTab():
                     gr.Markdown(value="Pos")
 
                     i_pos_emo = gr.Textbox(max_lines=1, label="Emotions",
-                                           value=f"{doc['pos']}")
+                                           value=f"{doc['pos_emo']}")
                     i_pos_ani = gr.Textbox(max_lines=1, label="Animations",
-                                           value=f"{doc['pos']}")
+                                           value=f"{doc['pos_ani']}")
                     i_pos_obj = gr.Textbox(max_lines=1, label="Objects",
-                                           value=f"{doc['pos']}")
+                                           value=f"{doc['pos_obj']}")
 
                   with gr.Column():
 
                     gr.Markdown(value="Neg")
 
                     i_neg_emo = gr.Textbox(max_lines=1, label="Emotions",
-                                           value=f"{doc['neg']}")
+                                           value=f"{doc['neg_emo']}")
                     i_neg_ani = gr.Textbox(max_lines=1, label="Animations",
-                                           value=f"{doc['neg']}")
-                    i_neg_obg = gr.Textbox(max_lines=1, label="Objects",
-                                           value=f"{doc['neg']}")
+                                           value=f"{doc['neg_ani']}")
+                    i_neg_obj = gr.Textbox(max_lines=1, label="Objects",
+                                           value=f"{doc['neg_obj']}")
                   # with gr.Column(scale=1):
                   #   pass
                     # with gr.Accordion("LoRA"):
@@ -116,7 +116,7 @@ class genEmoteTab():
               with gr.Column(scale=3):
                 o_img = gr.Image(format="png", type="pil", height=256)
 
-                i_seq = gr.Textbox(visible=False, value=f"{doc['code']}")
+                i_seq = gr.Textbox(visible=False, value=f"{doc['seq']}")
 
                 with gr.Row():
                   i_gen = gr.Button(
@@ -134,9 +134,12 @@ class genEmoteTab():
             # Advanced Settings
             #
             # - Quick Prompts
+            # -- Camera
+            # -- Lighting
+            # -- Filter
             # - LoRA
             # - OpenPose
-            with gr.Accordion(label="Advanced"):
+            with gr.Accordion(label="Advanced", open=False):
               with gr.Row():
                   # with gr.Column(scale=1):
                   #   pass

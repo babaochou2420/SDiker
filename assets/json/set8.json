@@ -1,0 +1,112 @@
+{
+  "set8": [
+    {
+      "seq": "1",
+      "pos_emo": "(angry:1.1)",
+      "pos_ani": "(clenched fist:1.1)",
+      "pos_obj": "",
+      "neg_emo": "smiling",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "2",
+      "pos_emo": "(happy:1.2), (smiling:1.2), blush",
+      "pos_ani": "(waving:1.2)",
+      "pos_obj": "",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "3",
+      "pos_emo": "(yawning:1.2)",
+      "pos_ani": "",
+      "pos_obj": "holding a white plain cup of coffee",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "4",
+      "pos_emo": "(sleepy:1.2), (yawning:1.2)",
+      "pos_ani": "(leaning on a pillow)",
+      "pos_obj": "",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "5",
+      "pos_emo": "(crying:1.2)",
+      "pos_ani": "(wiping away tears:1.2)",
+      "pos_obj": "teardrops",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "6",
+      "pos_emo": "(embarassed:1.2), (blush:0.9)",
+      "pos_ani": "(flying sweatdrop:1.2), (looking down:1.2), open mouth",
+      "pos_obj": "",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "7",
+      "pos_emo": "(panicking:1.2)",
+      "pos_ani": "(running hands through hair:1.2), (hurried), (flying sweatdrop:1.2), dashing",
+      "pos_obj": "",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "8",
+      "pos_emo": "(terrified:1.2)",
+      "pos_ani": "(whispering in terror:1.2), (shivering with dread:1.2), (eyes wide with fear:1.2), (face pale and clammy:1.2), (body trembling with fear:1.2)",
+      "pos_obj": "(dark, damp, and musty room with cobwebs and shadows:1.2)",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "9",
+      "pos_emo": "(excited:1.2)",
+      "pos_ani": "(bouncing up and down:1.2), (hands putting on cheeks with amazement:1.25)",
+      "pos_obj": "",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "10",
+      "pos_emo": "",
+      "pos_ani": "(waving hello:1.2), (smiling:1.2), (making eye contact:1.2)",
+      "pos_obj": "",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "11",
+      "pos_emo": "(shy:1.2), (blushing bright red:1.2), (heated:1.2)",
+      "pos_ani": "(covering face with embarassed:1)",
+      "pos_obj": "",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    },
+    {
+      "seq": "12",
+      "pos_emo": "(confident:1.2)",
+      "pos_ani": "(standing tall:1.2), (posing:1.2), (awaiting someone's arrival:1.2)",
+      "pos_obj": "(holding a bouquet of flowers)",
+      "neg_emo": "",
+      "neg_ani": "",
+      "neg_obj": ""
+    }
+  ]
+}
