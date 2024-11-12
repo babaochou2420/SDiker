@@ -6,6 +6,7 @@ import base64
 
 import requests
 
+from daos.image import ImageDao
 from utils.config import Config
 
 from beans_logging.auto import logger
@@ -30,6 +31,9 @@ class SDAPI:
       image = Image.open(
           io.BytesIO(ref_base64)
       )
+
+      image = ImageDao.rmbg(image)
+
       seed = json.loads(response.json().get("info")).get("seed", -1)
 
       return image, ref_base64, seed
@@ -79,6 +83,11 @@ class SDAPI:
       print(f"Error {response.status_code}: {response.text}")
       return None
 
+  #
+  # Tagger
+  #
+
+  # Tagger load
   def genRefTag(self, image, threshold=0.4, queue="", name_in_queue=""):
 
     def extract_tags(response):
@@ -127,12 +136,23 @@ class SDAPI:
       print(f"Request failed: {e}")
       return None
 
-  # def getBase(style):
-  #   match style:
-  #   case "Anime":
-  #   return config['BASEMODEL']['style']['anime']
-  #   case "Chibi":
-  #   return config['BASEMODEL']['style']['chibi']
+  # Tagger unload
+  def taggerUnload():
+    try:
+      requests.post(
+          "http://127.0.0.1:7860/tagger/v1/unload-interrogators")
+
+      logger.warning("# END - taggerUnload()")
+
+      # Parse and return the JSON response
+      return None
+    except requests.exceptions.RequestException as e:
+      print(f"Request failed: {e}")
+      return None
+
+  #
+  # SD
+  #
 
   # Changing the Base-Model
   def setBaseModel(self, style):

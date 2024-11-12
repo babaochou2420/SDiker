@@ -56,7 +56,7 @@ class settingsTab():
             with gr.Accordion(label=doc, open=False):
               with gr.Row():
 
-                i_getEmoteSet_key = gr.Textbox(value=doc)
+                i_getEmoteSet_key = gr.Textbox(visible=False, value=doc)
 
                 i_getEmoteSet_txt = gr.Code(scale=18, show_label=False, container=False, interactive=True,
                                             language="json", value=json.dumps(getEmoteSet(doc), indent=2, ensure_ascii=False))
@@ -88,9 +88,15 @@ class settingsTab():
 
         with gr.Column():
 
-          s_set_example = {"set": [{"seq": "The sequance in the set",
-                                    "pos": "the positive prompt for emotes", "neg": "the negative prompt for emotes"}, {"seq": "The sequance in the set",
-                                                                                                                        "pos": "the positive prompt for emotes", "neg": "the negative prompt for emotes"}]}
+          s_set_example = {"set_name": [{"seq": "SEQUANCE in SET",
+                                         "pos_emo": "EMOTION", "pos_ani": "ANIMATION", "pos_obj": "OBJECT",
+                                         "neg_emo": "EMOTION", "neg_ani": "ANIMATION", "neg_obj": "OBJECT",
+                                         },
+                                        {"seq": "SEQUANCE in SET",
+                                         "pos_emo": "EMOTION", "pos_ani": "ANIMATION", "pos_obj": "OBJECT",
+                                         "neg_emo": "EMOTION", "neg_ani": "ANIMATION", "neg_obj": "OBJECT",
+                                         },
+                                        ]}
 
           gr.Code(value=json.dumps(s_set_example, indent=2,
                   ensure_ascii=False), label="ex")

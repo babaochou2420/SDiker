@@ -36,16 +36,20 @@ class expEmoteTab():
         # Grid
         with gr.Column(variant="panel"):
           with gr.Row():
-            i_grd_btn = gr.Button(
-                "Grid Layout", icon="./assets/icon/grid_view_24dp.png", scale=3)
-            i_col = gr.Dropdown(
-                choices=[3, 4],
-                value=3, scale=1, show_label=False, container=False
-            )
-            i_row = gr.Dropdown(
-                choices=[3, 4],
-                value=3, scale=1, show_label=False, container=False
-            )
+            with gr.Column(scale=5):
+              i_grd_btn = gr.Button(
+                  "Grid Layout", icon="./assets/icon/grid_view_24dp.png")
+            with gr.Column(scale=5):
+              with gr.Row():
+
+                i_col = gr.Dropdown(
+                    choices=[3, 4],
+                    value=3, scale=1, show_label=False, container=False
+                )
+                i_row = gr.Dropdown(
+                    choices=[3, 4],
+                    value=3, scale=1, show_label=False, container=False
+                )
 
           o_grd_img = gr.Gallery(
               label="Grid Layout Preview",

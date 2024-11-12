@@ -60,61 +60,114 @@ class genEmoteTab():
         for doc in set[key]:
 
           """"""
-          with gr.Row(variant="panel"):
-            with gr.Column(scale=2):
-              # with gr.Row():
-              #   f_seq = gr.Textbox(
-              #       value=f"Seq: {doc['code']}", container=False)
+          with gr.Column(variant="panel"):
+            with gr.Row():
 
-              o_img = gr.Image(format="png", type="pil")
+              # Basic Settings
+              with gr.Column(scale=7):
 
-              i_seq = gr.Textbox(value=f"{doc['code']}")
+                with gr.Row():
 
-            with gr.Column(scale=6):
+                  with gr.Column():
+
+                    gr.Markdown(value="Pos")
+
+                    i_pos_emo = gr.Textbox(max_lines=1, label="Emotions",
+                                           value=f"{doc['pos']}")
+                    i_pos_ani = gr.Textbox(max_lines=1, label="Animations",
+                                           value=f"{doc['pos']}")
+                    i_pos_obj = gr.Textbox(max_lines=1, label="Objects",
+                                           value=f"{doc['pos']}")
+
+                  with gr.Column():
+
+                    gr.Markdown(value="Neg")
+
+                    i_neg_emo = gr.Textbox(max_lines=1, label="Emotions",
+                                           value=f"{doc['neg']}")
+                    i_neg_ani = gr.Textbox(max_lines=1, label="Animations",
+                                           value=f"{doc['neg']}")
+                    i_neg_obg = gr.Textbox(max_lines=1, label="Objects",
+                                           value=f"{doc['neg']}")
+                  # with gr.Column(scale=1):
+                  #   pass
+                    # with gr.Accordion("LoRA"):
+
+                    #   with gr.Column():
+                    #     # p_loraDetail = gr.Image()
+                    #     gr.Slider(
+                    #         minimum=-1,
+                    #         maximum=2,
+                    #         step=0.1,
+                    #         value=0,
+                    #         label="Detail Tweaker",
+                    #     )
+
+                    # with gr.Column(scale=1):
+                    #   with gr.Accordion("Advanced"):
+
+                    #     with gr.Column():
+                    #       with gr.Row():
+                    #         gr.Checkbox(
+                    #             label="IPadapter (This will take much time)", scale=1)
+                    #         # gr.Textbox(value="This will take much time", scale=2)
+
+              # Result
+              with gr.Column(scale=3):
+                o_img = gr.Image(format="png", type="pil", height=256)
+
+                i_seq = gr.Textbox(visible=False, value=f"{doc['code']}")
+
+                with gr.Row():
+                  i_gen = gr.Button(
+                      value="Generate",
+                      icon="./assets/icon/replay_24dp.png",
+                  )
+                  i_gen.click(fn=genEmote, inputs=[
+                      charaInfo, c_ref_base64, i_pos_emo, i_neg_emo], outputs=[o_img])
+
+                  i_savEmote_btn = gr.Button(
+                      value="Save Result", icon="./assets/icon/new_label_24dp.png")
+                  i_savEmote_btn.click(
+                      fn=savEmote, inputs=[o_img, stateId, i_seq])
+
+            # Advanced Settings
+            #
+            # - Quick Prompts
+            # - LoRA
+            # - OpenPose
+            with gr.Accordion(label="Advanced"):
               with gr.Row():
+                  # with gr.Column(scale=1):
+                  #   pass
+                # Quick Prompt
+                with gr.Column(scale=7):
+                  gr.Markdown(value="Camera")
+                  gr.CheckboxGroup(show_label=False, choices=[
+                                   "Close Up", "Zoom In", "Zoom Out", "Tilt Left", "Tilt Right", "Wide Angle", "High Angle", "Low Angle", "Overhead"])
+                  gr.Radio(show_label=False, choices=[
+                           "Side View", "Front View", "Back View"])
 
-                i_pos = gr.Textbox(label="Pos",
-                                   value=f"{doc['pos']}")
-                i_neg = gr.Textbox(label="Neg",
-                                   value=f"{doc['neg']}")
-              with gr.Row():
-                with gr.Column(scale=1):
+                  gr.Markdown(value="Lighting")
+                  gr.Radio(show_label=False, choices=[
+                      'LT', 'RT', 'LB', 'RB'])
+
+                  gr.Markdown(value="Filter")
+                  gr.CheckboxGroup(show_label=False, choices=['Warm', 'Cold'])
+
+                  # LoRA
                   with gr.Row():
-                    i_gen = gr.Button(
-                        value="Generate",
-                        icon="./assets/icon/replay_24dp.png",
-                    )
-                    i_gen.click(fn=genEmote, inputs=[
-                                charaInfo, c_ref_base64, i_pos, i_neg], outputs=[o_img])
-                    i_savEmote_btn = gr.Button(
-                        value="Save Result", icon="./assets/icon/new_label_24dp.png")
 
-                    i_savEmote_btn.click(
-                        fn=savEmote, inputs=[o_img, stateId, i_seq])
-                with gr.Column(scale=1):
-                  gr.Checkbox(label="Close Up")
+                    pass
 
-                with gr.Column(scale=1):
-                  with gr.Accordion("LoRA"):
+                # OpenPose
+                with gr.Column(scale=3):
+                  gr.Markdown(value="OpenPose")
 
-                    with gr.Column():
-                      # p_loraDetail = gr.Image()
-                      gr.Slider(
-                          minimum=-1,
-                          maximum=2,
-                          step=0.1,
-                          value=0,
-                          label="Detail Tweaker",
-                      )
+                  gr.Image(type="pil", format="png", height=256)
 
-                # with gr.Column(scale=1):
-                #   with gr.Accordion("Advanced"):
-
-                #     with gr.Column():
-                #       with gr.Row():
-                #         gr.Checkbox(
-                #             label="IPadapter (This will take much time)", scale=1)
-                #         # gr.Textbox(value="This will take much time", scale=2)
+          # Divider
+          gr.Markdown(value="---")
           """"""
 
       # s_emoteSet.change(fn=listEmoteElements, inputs=s_emoteSet)

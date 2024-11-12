@@ -12,6 +12,7 @@ import base64
 
 from PIL import Image
 
+from daos.image import ImageDao
 from utils.config import Config
 
 config = Config.get_config()
@@ -70,7 +71,6 @@ class EmoteDao:
                         "weight": 1,
                         "resize_mode": "Envelope (Outer Fit)",
                         "module": "reference_adain+attn",
-                        "lowvram": True,
                         "processor_res": wid,
                         "control_mode": "My prompt is more important",
                     }
@@ -79,21 +79,9 @@ class EmoteDao:
         },
     }
 
-    # Make the API request
-    response = requests.post(api_url, json=payload)
+    image, _, _ = SDAPI.genTXT2IMG(payload)
 
-    # Check if request was successful
-    if response.status_code == 200:
-
-      image = Image.open(
-          io.BytesIO(base64.b64decode(
-              response.json().get("images", [None])[0]))
-      )
-
-      return image
-    else:
-      print(f"Error: {response.status_code}")
-      print(response.text)
+    return image
 
   def savEmote(self, image: Image.Image, uuid, seq: int) -> str:
     # Generate a unique folder path with UUIDv4
@@ -101,19 +89,15 @@ class EmoteDao:
     # Create the folder if it doesn’t exist
     os.makedirs(folder_path, exist_ok=True)
 
+    image = image.convert("RGBA")
+
     # Define the full path with the given sequence number as the filename
     file_path = os.path.join(folder_path, f"{seq}.png")
 
-    # # Check if file already exists
-    # if os.path.exists(file_path):
-    #   # Ask for confirmation to override
-    #   user_confirm = input(
-    #       f"File '{file_path}' already exists. Do you want to override it? (y/n): ")
-    #   if user_confirm.lower() != 'y':
-    #     return "Save operation canceled by user."
+    logger.warning(image.info)
 
     # Save the image as a PNG file
-    image.save(file_path, "PNG")
+    image.save(file_path, "png")
 
     return f"Image saved successfully at: {file_path}"
 
@@ -212,6 +196,8 @@ class EmoteDao:
 
     result = [os.path.splitext(filename)[0] for filename in os.listdir(
         self.json_dir) if filename.endswith(".json")]
+
+    logger.info(result)
 
     logger.warning("# END - lstEmoteSets()")
 

@@ -3,6 +3,7 @@
 底圖生成
 """
 
+from daos.image import ImageDao
 from utils.config import Config
 import gradio as gr
 
@@ -11,6 +12,8 @@ import uuid
 from beans_logging.auto import logger
 
 from daos.api.sd import SDAPI
+
+from utils.tools import returnData
 
 sdAPI = SDAPI()
 
@@ -60,8 +63,6 @@ class genCharaTab:
           image,
           seed,
           style,
-          wid,
-          hgt,
           {"pos": pos, "neg": neg, "style": style,
               "seed": seed, "wid": wid, "hgt": hgt},
           ref_base64,
@@ -72,9 +73,6 @@ class genCharaTab:
       # Your function logic here
       result = sdAPI.genRefTag(imgPath)
       return result
-
-    def returnData(data):
-      return data
 
     def load_lora_model(lora_file):
       # Function to load LoRA model (to be implemented)
@@ -87,34 +85,29 @@ class genCharaTab:
     with gr.Tab("Step 1. Gen Chara"):
       with gr.Row():
 
-        def genRefTag(imgPath):
+        # IMG-2-TXT
+        with gr.Row(variant="panel"):
+          # Results
+          with gr.Column(scale=7):
+            o_baseRef_txt = gr.Textbox()
+          # Triggers
+          with gr.Column(scale=3):
+            i_baseRef_img = gr.Image(
+                label="Reference", type="pil", format="png", height=256
+            )
 
-          result = sdAPI.genRefTag(imgPath)
+            i_baseRef_btn = gr.Button(
+                value="IMG-2-TXT", icon="./assets/icon/quick_reference_all_24dp.png")
 
-          return result
+            s_baseRef_btn = gr.Button(
+                value="Use as Pos-Prompt", icon="./assets/icon/swipe_left_24dp.png")
 
-        with gr.Column():
-          o_baseRef_txt = gr.Textbox()
-
-          i_baseRef_btn = gr.Button(
-              value="IMG-2-TXT", icon="./assets/icon/quick_reference_all_24dp.png")
-
-          s_baseRef_btn = gr.Button(
-              value="Use as Pos-Prompt", icon="./assets/icon/swipe_left_24dp.png")
-
-        with gr.Column():
-          i_baseRef_img = gr.Image(
-              label="Reference", type="pil", format="png", height=360
-          )
-
-        i_baseRef_btn.click(fn=genRefTag, inputs=[
-                            i_baseRef_img], outputs=[o_baseRef_txt])
+          i_baseRef_btn.click(fn=genRefTag, inputs=[
+                              i_baseRef_img], outputs=[o_baseRef_txt])
 
       with gr.Row(min_height=300):
-        with gr.Column(scale=1):
+        with gr.Column(scale=7):
           i_pos = gr.Textbox(label="Positive Prompt", lines=5)
-
-          def returnData(data): return data
 
           s_baseRef_btn.click(fn=returnData, inputs=[
               o_baseRef_txt], outputs=[i_pos])
@@ -126,14 +119,17 @@ class genCharaTab:
           with gr.Row():
             # Style
             with gr.Column(scale=1):
+              with gr.Row():
+                f_demo = gr.Image(interactive=False,
+                                  value="./assets/demo/style_chibi.png",
+                                  label="ex", show_download_button=False, show_fullscreen_button=False,
+                                  width=192, height=192)
+                i_sty = gr.Radio(value="Chibi", choices=[
+                    "Chibi", "Anime 1"], show_label=False)
 
-              f_demo = gr.Image(interactive=False,
-                                value="./assets/demo/style_chibi.png",
-                                label="ex", show_download_button=False, show_fullscreen_button=False,
-                                width=192, height=192)
-
+              # Display the demom image for the selected base-model
               # @gr.render(inputs=[i_sty], triggers=[i_sty.change])
-              def x(style):
+              def getStyleDemo(style):
 
                 imgPath = ""
 
@@ -153,14 +149,7 @@ class genCharaTab:
 
                 return gr.update(value=imgPath)
 
-              i_sty = gr.Radio(value="Chibi", choices=[
-                               "Chibi", "Anime 1"], show_label=False)
-
-              i_sty.change(x, i_sty, f_demo)
-
-              # # DEMO
-              # with gr.Row():
-              #   gr.Image(interactive=False)
+              i_sty.change(getStyleDemo, i_sty, f_demo)
 
               # Second radio button for Chibi-specific options, initially hidden
               i_proportion = gr.Radio(
@@ -170,8 +159,8 @@ class genCharaTab:
                 # Show options only if "Chibi" is selected
                 if style == "Chibi":
                   return gr.update(visible=True)
-                else:
-                  return gr.update(visible=False)
+
+                return gr.update(visible=False)
 
               # Add the callback to update the visibility of the chibi options
               i_sty.change(toggle_chibi_options, i_sty, i_proportion)
@@ -196,20 +185,39 @@ class genCharaTab:
                   label="Height",
               )
         # Passing reference image to SD-Tagger
-        with gr.Column(scale=1):
+        with gr.Column(scale=3):
 
           pass
 
-      gen_chara_btn = gr.Button("Generate Character")
+      i_gen_btn = gr.Button("Generate Character")
 
       with gr.Row():
-        with gr.Column():
-          o_seeds = gr.Textbox(label="Seed")
+        with gr.Column(scale=7):
           with gr.Row():
-            o_sty = gr.Textbox(label="Style")
-            o_wid = gr.Textbox(label="Width")
-            o_hgt = gr.Textbox(label="Height")
-        o_chara = gr.Image(type="pil", format="png")
+            with gr.Column(scale=1):
+              o_seeds = gr.Textbox(label="Seed")
+            with gr.Column(scale=2):
+              o_uuid = gr.Textbox(label="UUID")
+
+          with gr.Row():
+            with gr.Column(scale=1):
+              o_sty = gr.Textbox(label="Style")
+            with gr.Column(scale=2):
+              with gr.Row():
+                o_wid = gr.Textbox(value=0, label="Width")
+                o_hgt = gr.Textbox(value=0, label="Height")
+
+        with gr.Column(scale=3):
+
+          i_chara = gr.Image(type="pil", format="png", height=256)
+
+          # User upload their own chara
+          i_chara.upload()
+
+          i_chara.change(fn=ImageDao.getSize, inputs=[
+                         i_chara], outputs=[o_wid, o_hgt])
+
+          i_chara.change(fn=returnData, inputs=[i_sty], outputs=[o_sty])
 
       lora_upload = gr.File(
           label="Upload LoRA for SD1.5",
@@ -219,11 +227,16 @@ class genCharaTab:
           label="LoRA Model Status", interactive=False)
 
       # Button interactions
-      gen_chara_btn.click(
+      i_gen_btn.click(
           genChara,
           inputs=[i_pos, i_neg, i_sty, i_proportion, i_seed, i_wid, i_hgt],
-          outputs=[o_chara, o_seeds, o_sty, o_wid,
-                   o_hgt, charaInfo, c_ref_base64, stateId],
+          outputs=[i_chara, o_seeds, o_sty, charaInfo, c_ref_base64, stateId],
       )
+
+      i_gen_btn.click(fn=SDAPI.taggerUnload())
+
       lora_upload.upload(
           load_lora_model, inputs=lora_upload, outputs=lora_status)
+
+      # Show UUID
+      stateId.change(fn=returnData, inputs=[stateId], outputs=[o_uuid])
