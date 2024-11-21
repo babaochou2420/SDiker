@@ -3,9 +3,13 @@
 成品輸出
 """
 
+import os
 import gradio as gr
 
 from daos.emote import EmoteDao
+from utils.tools import returnData
+
+from PIL import Image
 
 emoteDao = EmoteDao()
 
@@ -30,7 +34,24 @@ class expEmoteTab():
     #
     with gr.Tab("Step 3. Output"):
 
-      i_uuid = gr.Textbox(label="UUID")
+      with gr.Row():
+
+        i_uuid = gr.Textbox(label="UUID")
+
+        o_demo = gr.Image(type="pil", format="png", height=256)
+
+        def showPreview(uuid):
+          # Define the path to the image
+          file_path = os.path.join('./archive', str(uuid), '0.png')
+
+          # Check if the file exists
+          if not os.path.isfile(file_path):
+            return None
+
+          # Open and return the image as a PIL Image object
+          return Image.open(file_path)
+
+        i_uuid.change(fn=showPreview, inputs=[i_uuid])
 
       with gr.Row():
         # Grid

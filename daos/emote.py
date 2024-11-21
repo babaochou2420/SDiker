@@ -84,22 +84,10 @@ class EmoteDao:
     return image
 
   def savEmote(self, image: Image.Image, uuid, seq: int) -> str:
-    # Generate a unique folder path with UUIDv4
-    folder_path = os.path.join('./archive', str(uuid))
-    # Create the folder if it doesn’t exist
-    os.makedirs(folder_path, exist_ok=True)
 
-    image = image.convert("RGBA")
+    filPath = os.path.join('./archive', str(uuid), f'{seq}.png')
 
-    # Define the full path with the given sequence number as the filename
-    file_path = os.path.join(folder_path, f"{seq}.png")
-
-    logger.warning(image.info)
-
-    # Save the image as a PNG file
-    image.save(file_path, "png")
-
-    return f"Image saved successfully at: {file_path}"
+    ImageDao.savImagePIL(image, uuid, filPath)
 
   #
   # Export

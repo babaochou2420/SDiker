@@ -3,9 +3,13 @@
 底圖生成
 """
 
+from daos.chara import CharaDao
+from daos.gradio import GradioDao
 from daos.image import ImageDao
 from utils.config import Config
 import gradio as gr
+
+from PIL import Image
 
 import uuid
 
@@ -59,6 +63,8 @@ class genCharaTab:
 
       image, ref_base64, seed = sdAPI.genChara(pos, neg, style, seed, wid, hgt)
 
+      setId = uuid.uuid4()
+
       return (
           image,
           seed,
@@ -66,7 +72,8 @@ class genCharaTab:
           {"pos": pos, "neg": neg, "style": style,
               "seed": seed, "wid": wid, "hgt": hgt},
           ref_base64,
-          uuid.uuid4()
+          setId,
+          setId
       )
 
     def genRefTag(imgPath):
@@ -82,7 +89,14 @@ class genCharaTab:
     # Widgets
     #
 
-    with gr.Tab("Step 1. Gen Chara"):
+    with gr.Tab("Step 1. Gen Chara") as tab:
+
+      # States
+
+      state_i_sav_btn = gr.State(value=False)
+
+      # Layouy
+
       with gr.Row():
 
         # IMG-2-TXT
@@ -189,9 +203,7 @@ class genCharaTab:
 
           pass
 
-      i_gen_btn = gr.Button("Generate Character")
-
-      with gr.Row():
+      with gr.Row(variant="panel"):
         with gr.Column(scale=7):
           with gr.Row():
             with gr.Column(scale=1):
@@ -206,6 +218,13 @@ class genCharaTab:
               with gr.Row():
                 o_wid = gr.Textbox(value=0, label="Width")
                 o_hgt = gr.Textbox(value=0, label="Height")
+
+          with gr.Row():
+            with gr.Column(scale=1):
+              i_sav_btn = gr.Button(visible=False, value="Save Design",
+                                    icon="./assets/icon/new_label_24dp.png")
+            with gr.Column(scale=2):
+              i_gen_btn = gr.Button("Generate Character")
 
         with gr.Column(scale=3):
 
@@ -230,10 +249,17 @@ class genCharaTab:
       i_gen_btn.click(
           genChara,
           inputs=[i_pos, i_neg, i_sty, i_proportion, i_seed, i_wid, i_hgt],
-          outputs=[i_chara, o_seeds, o_sty, charaInfo, c_ref_base64, stateId],
+          outputs=[i_chara, o_seeds, o_sty,
+                   charaInfo, c_ref_base64, o_uuid, stateId],
       )
 
       i_gen_btn.click(fn=SDAPI.taggerUnload())
+
+      i_gen_btn.click(fn=GradioDao.revVisiblility, inputs=[
+                      state_i_sav_btn], outputs=[i_sav_btn, state_i_sav_btn])
+
+      # # Save the chara as '0.png'
+      i_sav_btn.click(fn=CharaDao.savChara, inputs=[c_ref_base64, stateId])
 
       lora_upload.upload(
           load_lora_model, inputs=lora_upload, outputs=lora_status)

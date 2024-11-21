@@ -10,6 +10,9 @@ import gradio as gr
 from daos.chara import CharaDao
 from daos.emote import EmoteDao
 
+from PIL import Image
+import os
+
 emoteDao = EmoteDao()
 charaDao = CharaDao()
 
@@ -39,6 +42,51 @@ class genEmoteTab():
     #
     with gr.Tab("Step 2. Gen Sticker") as tab:
 
+      def get_latest_folder() -> str:
+
+        directory = os.path.join('./archive')
+
+        # List all subdirectories in the given directory
+        subdirs = [
+            d for d in os.listdir(directory)
+            if os.path.isdir(os.path.join(directory, d))
+        ]
+
+        if not subdirs:
+          return None  # No folders found
+
+        # Get the latest folder based on modification time
+        latest_folder = max(
+            subdirs,
+            key=lambda d: os.path.getmtime(os.path.join(directory, d))
+        )
+
+        return latest_folder
+
+      # Preview - Chara
+      def fetchChara(uuid: str):
+        # Define the folder path based on the UUID
+        folder_path = os.path.join('./archive', uuid)
+
+        # Define the expected file path for 0.png
+        file_path = os.path.join(folder_path, '0.png')
+
+        # Check if 0.png exists in the folder
+        if not os.path.isfile(file_path):
+          return None  # Return None if the file does not exist
+
+        return file_path
+
+      with gr.Row():
+        with gr.Column(scale=7):
+          i_uuid = gr.Textbox(label="UUID")
+
+        with gr.Column(scale=3):
+          o_demoview = gr.Image(format="png", type="pil", height=256)
+
+      i_uuid.change(fn=fetchChara, inputs=[i_uuid], outputs=[o_demoview])
+
+      # Function - Emote
       s_emoteSet = gr.Radio(
           value="", choices=list(emoteDao.lstEmoteSets()), label="Select Set"
       )
@@ -152,11 +200,12 @@ class genEmoteTab():
                            "Side View", "Front View", "Back View"])
 
                   gr.Markdown(value="Lighting")
-                  gr.Radio(show_label=False, choices=[
-                      'LT', 'RT', 'LB', 'RB'])
+                  gr.Radio(show_label=False, choices=['Broad Lighting',
+                                                      'Rim Lighting', 'Backlight', 'God Rays', 'Luminescent Effects', 'Caustics'])
 
                   gr.Markdown(value="Filter")
-                  gr.CheckboxGroup(show_label=False, choices=['Warm', 'Cold'])
+                  gr.CheckboxGroup(show_label=False, choices=[
+                                   'Blue Hour', 'Golden Hour'])
 
                   # LoRA
                   with gr.Row():
@@ -181,3 +230,5 @@ class genEmoteTab():
       #     inputs=[charaInfo, s_emoteSet],
       #     outputs=[sticker_output],
       # )
+
+      tab.select(fn=get_latest_folder, outputs=[i_uuid])
