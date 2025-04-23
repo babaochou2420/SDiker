@@ -6,7 +6,7 @@ API:
 PROMPT:
   fixed:
     POS_T: "best quality, "
-    NEG_T: "FastNegativeV2, (easynegative:2), ng_deepnegative_v1_75t, low quality, blurry, greyscale, comic art, text, watermark, signature, ugly, bad anatomy, cropped, censored, xray"
+    NEG_T: "FastNegativeV2, (easynegative:2), ng_deepnegative_v1_75t, low quality, blurry, cropped, greyscale, comic art, text, watermark, signature, ugly, bad anatomy, cropped, censored, xray"
   style:
     chibi: "[System: Chibi Style] Cute, exaggerated features, big eyes."
     realistic: "[System: Realistic Style] Detailed, lifelike proportions."

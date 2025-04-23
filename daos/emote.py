@@ -87,7 +87,7 @@ class EmoteDao:
 
     filPath = os.path.join('./archive', str(uuid), f'{seq}.png')
 
-    ImageDao.savImagePIL(image, uuid, filPath)
+    ImageDao.savImagePIL(image, filPath)
 
   #
   # Export
@@ -134,7 +134,7 @@ class EmoteDao:
 
     # Collect all PNG files, sort by name
     png_files = sorted(
-        [f for f in os.listdir(folder_path) if f.endswith('.png')], key=lambda x: int(x.rstrip('.png')))
+        [f for f in os.listdir(folder_path) if f.endswith('.png') and f != '0.png'], key=lambda x: int(x.rstrip('.png')))
 
     # Calculate the total number of grids required
     total_images = len(png_files)

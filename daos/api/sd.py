@@ -32,7 +32,7 @@ class SDAPI:
           io.BytesIO(ref_base64)
       )
 
-      image = ImageDao.rmbg(image)
+      # image = ImageDao.rmbg(image)
 
       seed = json.loads(response.json().get("info")).get("seed", -1)
 

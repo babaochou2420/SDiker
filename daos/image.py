@@ -20,11 +20,11 @@ class ImageDao:
     input_image.save(img_byte_arr, format='PNG')
     img_byte_arr = img_byte_arr.getvalue()
 
-    # Use rembg to remove the background
-    output_data = remove(img_byte_arr)
+    # # Use rembg to remove the background
+    # output_data = remove(img_byte_arr)
 
     # Convert the output bytes back to a PIL Image
-    output_image = Image.open(io.BytesIO(output_data)).convert("RGBA")
+    output_image = Image.open(io.BytesIO(img_byte_arr)).convert("RGBA")
 
     return output_image
 
@@ -56,9 +56,9 @@ class ImageDao:
   # Save image in PIL.Image
   def savImagePIL(image_PIL, filepath):
     # Convert the image to "RGBA" to ensure transparency is preserved, if any
-    image = image.convert("RGBA")
+    # image = image.convert("RGBA")
 
     # Save the image as 0.png in the directory
-    image.save(filepath, "PNG")
+    image_PIL.save(filepath, "PNG")
 
     return f"Image saved successfully at: {filepath}"
