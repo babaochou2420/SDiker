@@ -1,5 +1,9 @@
 # SDiker
 
+<div style="display: flex; gap: 10px;">
+<img src="examples/SDiker_grid_a2d7a5cf-0de4-4b94-9d57-3f8ebcf34112.jpg" style="width: 45vw;"/>
+<img src="examples/SDiker_grid_dc57c7b3-6205-48f5-b079-de1bab3cd632_1.png" style="width: 45vw;"/>
+</div>
 
 ## 專案簡介
 （由於穩定性的問題，這是一個進行到一半的實驗）</br></br>
