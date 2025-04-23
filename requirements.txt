@@ -4,6 +4,7 @@ gradio==5.4.0
 requests==2.32.3
 # IMG
 pillow==11.0.0
+rembg==2.0.59
 # SYS
 PyYAML==6.0.2
 # LOG
